@@ -34,9 +34,6 @@ public class BatchConfig {
 
 	private final String BASE_URL = "http://localhost:8081";
 	private RestTemplate restTemplate = new RestTemplate();
-	private int secondsToSleep = 5;
-//	private HttpHeaders headers = null;
-//	private HttpEntity<String> request = null;
 
 	@Autowired
 	@Qualifier("transactionManagerApp")
@@ -51,9 +48,9 @@ public class BatchConfig {
 	}
 
 	@Bean
-	public Step step(ItemReader<User> reader, ItemWriter<User> writer, JobRepository jobRepository) {
+	public Step step(ItemReader<UserDTO> reader, ItemWriter<User> writer, JobRepository jobRepository) {
 		return new StepBuilder("step", jobRepository)
-				.<User, User>chunk(10, transactionManager)
+				.<UserDTO, User>chunk(10, transactionManager)
 				.reader(reader)
 				.processor(processor())
 				.writer(writer)
@@ -61,88 +58,47 @@ public class BatchConfig {
 	}
 
 	@Bean
-	public ListItemReader<User> reader() throws InterruptedException {
-		//List<User> users = fetchUserLoginByStarredRepo("devsuperior", "sds-dsmovie");
-		return new ListItemReader<User>(fetchUserData());
+	public ListItemReader<UserDTO> reader() {
+		return new ListItemReader<UserDTO>(fetchUserData());
 	}
 
-	public ItemProcessor<User, User> processor() {
-		return new ItemProcessor<User, User>() {
+	public ItemProcessor<UserDTO, User> processor() {
+		return new ItemProcessor<UserDTO, User>() {
 
 			@Override
-			public User process(User item) throws Exception {
-//				if (item.getLogin().equals("yyy"))
-//					throw new Exception("Exception in " + item.getId());
-				return item;
+			public User process(UserDTO item) throws Exception {
+				User user = new User();
+				user.setLogin(item.getLogin());
+				user.setName(item.getName());
+				user.setAvatarUrl(item.getAvatarUrl());
+				return user;
 			}
 
 		};
 	}
 
 	@Bean
-	public ItemWriter<User> userWriter(@Qualifier("appDS") DataSource dataSource) {
-		//return items -> items.forEach(System.out::println);		
+	public ItemWriter<User> userWriter(@Qualifier("appDS") DataSource dataSource) {		
 		return new JdbcBatchItemWriterBuilder<User>()
 		        .dataSource(dataSource)
 		        .sql(
-		            "INSERT INTO user (id, login, name, location, avatar_url, followers, following, created_at) VALUES (:id, :login, :name, :location, :avatarUrl, :followers, :following, :createdAt)")
+		            "INSERT INTO user (login, name, avatar_url) VALUES (:login, :name, :avatarUrl)")
 		        .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
 		        .build();
 	}
 	
-	private List<User> fetchUserData() throws InterruptedException {
+	private List<UserDTO> fetchUserData() {
 		
 		String uri = BASE_URL + "/clients";
 		
-		System.out.println("Sleeping ... " + secondsToSleep * 1000);
-		Thread.sleep(secondsToSleep * 1000);
-		
 		System.out.println("Fetching data ...");
-		ResponseEntity<List<User>> response = restTemplate.exchange(uri, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<User>>() {
+		ResponseEntity<List<UserDTO>> response = restTemplate.exchange(uri, HttpMethod.GET, null,
+				new ParameterizedTypeReference<List<UserDTO>>() {
 				});
 		
-		List<User> result = response.getBody();
+		List<UserDTO> result = response.getBody();
 		return result;		
 	}
-	
-	/*
-	private List<User> fetchUserLoginByStarredRepo(String owner, String repo) {
-
-		String uri = BASE_URL + "/repos/" + owner + "/" + repo + "/stargazers";
-		request = new HttpEntity<String>(getHttpHeaders());
-
-		ResponseEntity<List<User>> response = restTemplate.exchange(uri, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<User>>() {
-				});
-
-		List<User> result = response.getBody();
-		// result.forEach(user -> System.out.println(user.toString()));
-		return result;
-	}
-
-	private User fetchUserData(User user) {
-
-		String uri = BASE_URL + "/users/" + user.getLogin();
-		request = new HttpEntity<String>(getHttpHeaders());
-
-		ResponseEntity<User> response = restTemplate.exchange(uri, HttpMethod.GET, null,
-				new ParameterizedTypeReference<User>() {
-				});
-
-		user = response.getBody();
-		return user;
-	}
-	
-
-	public HttpHeaders getHttpHeaders() {
-		if (headers == null) {
-			headers = new HttpHeaders();
-			headers.add("Authorization", "Bearer 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");
-		}
-		return headers;
-	}
-	*/
 
 	@BeforeChunk
 	private void beforeChunk(ChunkContext context) {
