@@ -1,4 +1,4 @@
-package com.devsuperior.githubuser;
+package com.devsuperior.githubuser.config;
 
 import javax.sql.DataSource;
 

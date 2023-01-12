@@ -1,4 +1,4 @@
-package com.devsuperior.githubuser;
+package com.devsuperior.githubuser.dto;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package com.devsuperior.githubuser;
+package com.devsuperior.githubuser.entity;
 
 public class User {
 	
