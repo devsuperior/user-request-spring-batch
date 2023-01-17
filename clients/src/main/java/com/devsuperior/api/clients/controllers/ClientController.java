@@ -1,5 +1,7 @@
 package com.devsuperior.api.clients.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,11 @@ public class ClientController {
 	private ClientService service;
 	
 	@GetMapping
+	public List<ClientDTO> findAll() {
+		return service.findAll();
+	}
+	
+	@GetMapping(value = "/pagedData")
 	public Page<ClientDTO> findAll(Pageable pageable) {
 		return service.findAll(pageable);
 	}
