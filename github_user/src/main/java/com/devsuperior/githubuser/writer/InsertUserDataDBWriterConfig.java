@@ -25,7 +25,7 @@ public class InsertUserDataDBWriterConfig {
 		
 		return new JdbcBatchItemWriterBuilder<User>()
 				.dataSource(dataSource)
-				.sql("INSERT INTO user (login, name, avatar_url) VALUES (:login, :name, :avatarUrl)")
+				.sql("INSERT INTO tb_user (login, name, avatar_url) VALUES (:login, :name, :avatarUrl)")
 				.itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>()).build();
 	}
 }
