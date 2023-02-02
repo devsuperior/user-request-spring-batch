@@ -1,4 +1,4 @@
-# ![DevSuperior logo](https://raw.githubusercontent.com/devsuperior/bds-assets/main/ds/devsuperior-logo-small.png) Read data from remote API and save data do DB using Spring Batch
+# ![DevSuperior logo](https://raw.githubusercontent.com/devsuperior/bds-assets/main/ds/devsuperior-logo-small.png) Read data from remote API and save data to DB using Spring Batch
 >  Case study to implement a job to read data from a remote API and save to the database using Spring Batch
 
 #### Before starting
