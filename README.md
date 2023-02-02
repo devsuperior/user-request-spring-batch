@@ -66,6 +66,6 @@ INSERT INTO tb_client(login, name, location, avatar_url, followers, following, c
 
 ```sql
 CREATE DATABASE app;
-DROP TABLE IF EXISTS user;
-CREATE TABLE user(login VARCHAR(30), name VARCHAR(60), avatar_url VARCHAR(100), PRIMARY KEY(login));
+DROP TABLE IF EXISTS tb_user;
+CREATE TABLE tb_user(login VARCHAR(30), name VARCHAR(60), avatar_url VARCHAR(100), PRIMARY KEY(login));
 ```
