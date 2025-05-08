@@ -17,18 +17,18 @@ public class DataSourceConfig {
 	@Primary
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource")
-	public DataSource springDS() {
+	DataSource springDS() {
 		return DataSourceBuilder.create().build();
 	}
 	
 	@Bean
 	@ConfigurationProperties(prefix = "app.datasource")
-	public DataSource appDS() {
+	DataSource appDS() {
 		return DataSourceBuilder.create().build();
 	}
 	
 	@Bean
-	public PlatformTransactionManager transactionManagerApp(@Qualifier("appDS") DataSource dataSource) {
+	PlatformTransactionManager transactionManagerApp(@Qualifier("appDS") DataSource dataSource) {
 		return new DataSourceTransactionManager(dataSource);
 	}
 }
