@@ -6,12 +6,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.annotation.AfterChunk;
-import org.springframework.batch.core.annotation.BeforeChunk;
+import org.springframework.batch.core.listener.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.UnexpectedInputException;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.NonTransientResourceException;
+import org.springframework.batch.infrastructure.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,7 +22,7 @@ import com.devsuperior.githubuser.domain.ResponseUser;
 import com.devsuperior.githubuser.dto.UserDTO;
 
 @Configuration
-public class FetchUserDataReaderConfig implements ItemReader<UserDTO> {
+public class FetchUserDataReaderConfig implements ItemReader<UserDTO>, ChunkListener {
 	
 	private static Logger logger = LoggerFactory.getLogger(FetchUserDataReaderConfig.class);
 
@@ -75,15 +74,15 @@ public class FetchUserDataReaderConfig implements ItemReader<UserDTO> {
 		return page;
 	}
 
-	@BeforeChunk
-	public void beforeChunck(ChunkContext context) {
+	@Override
+	public void beforeChunk(ChunkContext context) {
 		for (int i = 0; i < chunkSize; i += pageSize) {
 			users.addAll(fetchUserDataFromAPI());
 		}
 	}
 
-	@AfterChunk
-	public void afterChunck(ChunkContext context) {
+	@Override
+	public void afterChunk(ChunkContext context) {
 		logger.info("Fim do chunck");
 		incrementPage();
 		userIndex = 0;
