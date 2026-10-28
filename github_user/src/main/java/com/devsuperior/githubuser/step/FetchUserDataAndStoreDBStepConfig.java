@@ -26,6 +26,7 @@ public class FetchUserDataAndStoreDBStepConfig {
 	@Value("${chunkSize}")
 	private int chunkSize;
 
+	@SuppressWarnings("removal")
 	@Bean
 	public Step fetchUserDataAndStoreDBStep(ItemReader<UserDTO> fetchUserDataReader,
 			ItemProcessor<UserDTO, User> selectFieldsUserDataProcessor, ItemWriter<User> insertUserDataDBWriter,

@@ -76,6 +76,7 @@ public class FetchUserDataReaderConfig implements ItemReader<UserDTO>, ChunkList
 		return page;
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public void beforeChunk(ChunkContext context) {
 		for (int i = 0; i < chunkSize; i += pageSize) {
@@ -83,6 +84,7 @@ public class FetchUserDataReaderConfig implements ItemReader<UserDTO>, ChunkList
 		}
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public void afterChunk(ChunkContext context) {
 		logger.info("Fim do chunck");
